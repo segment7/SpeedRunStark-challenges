@@ -1,65 +1,24 @@
-# 🚩 Challenge #0: 🎟 Simple NFT Example
+# 📜 Challenge #0: Simple NFT
 
-![readme-0](./packages/nextjs/public/hero.png)
+![readme-0](./packages/nextjs/public/homepage.png)
 
-📚 This tutorial is meant for developers that already understand the 🖍️ basics: [Starklings](https://starklings.app/) or [Node Guardians](https://nodeguardians.io/campaigns?f=3%3D2)
+🔗 **前端交互链接** [**vercel.app**](https://starknet-simple-nft-sigma.vercel.app/)  
 
-🎫 Create a simple NFT:
+📜 **Sepolia 测试网 智能合约地址** [0x02e952d8f16c9d5b3ec3ae955293de9277c9cc4be9a5fd215229560678b1862e](https://sepolia.starkscan.co/contract/0x02e952d8f16c9D5b3Ec3ae955293de9277C9cc4bE9a5fd215229560678B1862E)
 
-👷‍♀️ You'll compile and deploy your first smart contract. Then, you'll use a template React app full of important Starknet components and hooks. Finally, you'll deploy an NFT to a public network to share with friends! 🚀
+## Checkpoint 0: 📦 环境和依赖 📚
 
-🌟 The final deliverable is an app that lets users purchase and transfer NFTs. Deploy your contracts to a testnet, then build and upload your app to a public web server.
-
-💬 Submit this challenge, meet other builders working on this challenge or get help in the [Builders telegram chat](https://t.me/+wO3PtlRAreo4MDI9)!
-
-## Checkpoint 0: 📦 Environment 📚
-
-Before you begin, you need to install the following tools:
-
-- [Node (>= v18.17)](https://nodejs.org/en/download/)
+- [Node (>= v20)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
 - [Rust](https://rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
+- [Starknet-devnet (=v0.4.0)](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)
+- [scarb (=v2.11.4)](https://docs.swmansion.com/scarb/download.html#install-via-asdf)
+- Starknet Foundry( [snforge v0.41.0](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf) )
 
-### Starknet-devnet version
-
-To ensure the proper functioning of scaffold-stark, your local `starknet-devnet` version must be `0.4.0`. To accomplish this, first check your local starknet-devnet version:
-
-```sh
-starknet-devnet --version
-```
-
-If your local starknet-devnet version is not `0.4.0`, you need to install it.
-
-Install Starknet-devnet `0.4.0` via `asdf` ([instructions](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)).
-
-### Scarb version
-
-To ensure the proper functioning of scaffold-stark, your local `Scarb` version must be `2.11.4`. To accomplish this, first check your local Scarb version:
-
-```sh
-scarb --version
-```
-
-If your local Scarb version is not `2.11.4`, you need to install it.
-
-- Install Scarb `2.11.4` via `asdf` ([instructions](https://docs.swmansion.com/scarb/download.html#install-via-asdf)).
-
-### Starknet Foundry version
-
-To ensure the proper functioning of the tests on scaffold-stark, your Starknet Foundry version must be `0.41.0`. To accomplish this, first check your Starknet Foundry version:
-
-```sh
-snforge --version
-```
-
-If your Starknet Foundry version is not `0.41.0`, you need to install it.
-
-- Install Starknet Foundry `0.41.0` via `asdf` ([instructions](https://foundry-rs.github.io/starknet-foundry/getting-started/installation.html#installation-via-asdf)).
-
-### Compatible versions
+> ### Compatible versions
 - Cairo - v2.11.4
 - Rpc - v0.8.0
 - Scarb - v2.11.4
@@ -68,135 +27,203 @@ If your Starknet Foundry version is not `0.41.0`, you need to install it.
 
 Make sure you have the compatible versions otherwise refer to [Scaffold-Stark Requirements](https://github.com/Scaffold-Stark/scaffold-stark-2?.tab=readme-ov-file#requirements)
 
-### Docker Option for Environment Setup
-
-<details>
-
-For an alternative to local installations, you can use Docker to set up the environment.
-
-- Install [Docker](https://www.docker.com/get-started/) and [VSCode Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers).
-- A pre-configured Docker environment is provided via `devcontainer.json` using the `starknetfoundation/starknet-dev:2.11.4` image.
-
-For complete instructions on using Docker with the project, check out the [Requirements Optional with Docker section in the README](https://github.com/Scaffold-Stark/scaffold-stark-2?tab=readme-ov-file#requirements-alternative-option-with-docker) for setup details.
-</details>
-
-Then download the challenge to your computer and install dependencies by running:
-
-```sh
+### 完成依赖安装
+```bash
 git clone https://github.com/Scaffold-Stark/speedrunstark.git challenge-0-simple-nft
 cd challenge-0-simple-nft
 git checkout challenge-0-simple-nft
 yarn install
 ```
 
-> in the same terminal, start your local network (a local instance of a blockchain):
+## Checkpoint 1: 合约部署
 
+### 自定义合约名字（可选）
+在packages/snfoundry/scripts-ts/deploy.ts，添加`contractName`
+```ts
+const deployScript = async (): Promise<void> => {
+  await deployContract({
+    contract: "YourCollectible",
+    contractName: "Starknet NFT Dapp",
+//add contract new contract name here
+    constructorArgs: {
+      owner: deployer.address,
+    },
+  });
+};
+```
+注意如下位置里的`contractName`若没有同步也须修改
+```
+packages/nextjs/components/SimpleNFT/NFTcard.tsx
+packages/nextjs/components/SimpleNFT/MyHoldings.tsx
+packages/nextjs/app/transfers/page.tsx
+packages/nextjs/app/myNFTs/page.tsx
+```
+
+### 测试网部署（Sepolia ）
+
+
+- 在 packages/nextjs/scaffold.config.ts 文件中，将 targetNetworks 修改为`[chains.sepolia]`
+- 在 packages/snfoundry/.env 文件中，填写与 Sepolia 测试网相关的环境变量，包括您的钱包地址和私钥
+    >  建议使用strarknet钱包如 Argent X，新建standard account进行测试网操作
+    ```shell
+    ## Sepolia 
+    # Below input your testnet private key
+    PRIVATE_KEY_SEPOLIA= 私钥
+    # Below input the rpc url of the testnet network
+    RPC_URL_SEPOLIA=https://starknet-sepolia.public.blastapi.io/rpc/v0_8
+    # Below input your testnet account address
+    ACCOUNT_ADDRESS_SEPOLIA= 钱包地址
+    ``` 
+
+- 在packages/nextjs/.env中调整合适的RPC地址
+
+    ```shell
+    # URL Sepolia
+    NEXT_PUBLIC_SEPOLIA_PROVIDER_URL= https://starknet-sepolia.public.blastapi.io/rpc/v0_8
+    ```
+    > 🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env`. You can create API keys from the [Alchemy dashboard](https://dashboard.alchemy.com/)  
+
+    > 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
+
+
+---
+最后完成部署
 ```bash
-yarn chain
+yarn deploy --network sepolia
 ```
 
-> To run a fork : `yarn chain --fork-network <URL> [--fork-block <BLOCK_NUMBER>]`
+> #### 报错处理
 
-> in a second terminal window, 🛰 deploy your contract (locally):
-
-```sh
-cd challenge-0-simple-nft
-yarn deploy
+```
+Error: The wallet you're using to deploy the contract is not deployed in the sepolia network.
 ```
 
-> in a third terminal window, start your 📱 frontend:
+<details><summary>解决方案</summary>
 
-```sh
-cd challenge-0-simple-nft
-yarn start
+在钱包选择standard account 点击deploy account  进行部署
+
+![alt text](<packages/nextjs/public/ch0-activate testnet account.png>)
+</details>
+
+---
 ```
+message: 'Account validation failed'
+```
+<details><summary>解决方案</summary>
+检查选择的地址，不能是smart account，若是，则需要degrade
+</details>
 
-📱 Open [http://localhost:3000](http://localhost:3000) to see the app.
+## Checkpoint 2: 🖨 指定 IPFS Pinning 服务提供商
 
----
+> INFRA: New IPFS key creation is disabled for all users. Only IPFS keys that were active in late 2024 continue to have access to the IPFS network.  INFRA 已[禁用](https://docs.metamask.io/services/get-started/endpoints/#ipfs)所有用户的新密钥创建。 只有拥有 2024 年底有效 IPFS 密钥的用户才能继续访问 IPFS 网络。）  
+> 
 
-## Checkpoint 1: ⛽️ Gas & Wallets 👛
+> 因此，我打算使用lighthouse作为替代的IPFS储存解决方案  
+> 使用此链接获取免费[API KEY](https://files.lighthouse.storage/?referBy=6fa185d2cc0741258fa3d85c40ae6c72)
 
-> 🔥 We'll use burner wallets on localhost.
+![alt text](packages/nextjs/public/lighthouse.png)
+- 安装依赖  
+`yarn add @lighthouse-web3/sdk && yarn install`  
+`npm install bls-eth-wasm`
 
-> 👛 Explore how burner wallets work in 🏗 Scaffold-Stark. You will notice the `Connect Wallet` button on the top right corner. After click it, you can choose the `Burner Wallet` option. You will get a default prefunded account.
+- 在packages/nextjs/utils/simpleNFT/ipfs.ts中进行调整  
 
-## ![wallet](./packages/nextjs/public/ch0-wallet.png)
+    <details><summary>代码示例</summary>
 
-## Checkpoint 2: 🖨 Minting
+    ```ts
+    //lighthouse services
+    import lighthouse from "@lighthouse-web3/sdk";
 
-> ✏️ Mint some NFTs! Click the **MINT NFT** button in the `My NFTs` tab.
+    const apiKey = "替换为你的 Lighthouse API Key";
 
-![image](./packages/nextjs/public/ch0-mynft.png)
+    export const ipfsClient = {
+    add: async (data: string) => {
+        try {
+        const response = await lighthouse.uploadText(data, apiKey);
+        //这里使用.uploadText应该能节省流量
+        if (response.data) {
+            return {
+            path: response.data.Hash,
+            cid: response.data.Hash,
+            size: response.data.Size,
+            };
+        }
+        throw new Error("Upload failed");
+        } catch (error) {
+        console.error("Error uploading to Lighthouse:", error);
+        throw error;
+        }
+    },
 
-👀 You should see your NFTs start to show up:
+    // 添加 get 方法以保持 API 兼容性
+    get: async (cid: string) => {
+        try {
+        const response = await fetch(
+            `https://gateway.lighthouse.storage/ipfs/${cid}`,
+        );
+        if (response.ok) {
+            const content = await response.text();
+            return content;
+        }
+        throw new Error(`Failed to fetch: ${response.statusText}`);
+        } catch (error) {
+        console.error("Error fetching from Lighthouse:", error);
+        throw error;
+        }
+    },
+    };
 
-![image](./packages/nextjs/public/ch0-nfts-images.png)
+    export async function getNFTMetadataFromIPFS(ipfsHash: string) {
+    try {
+        const response = await fetch(
+        `https://gateway.lighthouse.storage/ipfs/${ipfsHash}`,
+        );
+        if (response.ok) {
+        const content = await response.text();
+        try {
+            const jsonObject = JSON.parse(content);
+            return jsonObject;
+        } catch (error) {
+            console.log("Error parsing JSON:", error);
+            return undefined;
+        }
+        }
+        throw new Error(`Failed to fetch metadata: ${response.statusText}`);
+    } catch (error) {
+        console.error("Error getting metadata from Lighthouse:", error);
+        throw error;
+    }
+    }
 
-👛 Open an window Browser and navigate to <http://localhost:3000>
+    ```
 
-🎟 Transfer an NFT from one address to another using the UI:
+    </details>
 
-![image](./packages/nextjs/public/ch0-nfts-images-transfer.png)
 
-👛 Try to mint an NFT from a different address.
 
-🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the owner of YourCollectible?
 
-🔏 You can also check out your smart contract `YourCollectible.cairo` in `packages/snfoundry/contracts`.
 
-💼 Take a quick look at your deploy script `deploy.ts` in `packages/snfoundry/script-ts`.
 
-📝 If you want to edit the frontend, navigate to `packages/nextjs/app` and open the specific page you want to modify. For instance: `/myNFTs/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-
----
-
-## Checkpoint 3: 💾 Deploy your contract! 🛰
-
-🛰 Ready to deploy to a public testnet?!?
-
-> Find the `packages/nextjs/scaffold.config.ts` file and change the `targetNetworks` to `[chains.sepolia]`.
-
-![chall-0-scaffold-config](./packages/nextjs/public/ch0-scaffold-config.png)
-
-🔐 Prepare your environment variables.
-
-> Find the `packages/snfoundry/.env` file and fill the env variables related to Sepolia testnet with your own wallet account address and private key.
-
-> Follow up [Wallet Account](https://docs.starknet.io/quick-start/set-up-an-account) to install the example Wallet on Browser
-
-- Visit [here](https://www.argent.xyz/argent-x) to dowload ArgentX wallet
-- visit [here](https://braavos.app/) to dowload Braavos wallet
-
-> You will need to get some STRK Sepolia tokens to deploy your contract to Sepolia testnet.Some popular faucets are [Starknet Faucet](https://starknet-faucet.vercel.app/) and [Blastapi Starknet Sepolia STRK](https://blastapi.io/faucets/starknet-sepolia-strk)
-
-🚀 Deploy your NFT smart contract with `yarn deploy`.
-
-> you input `yarn deploy --network sepolia`.
-
----
-
-## Checkpoint 4: 🚢 Ship your frontend! 🚁
-
-> 🦊 Since we have deployed to a public testnet, you will now need to connect using a wallet you own(Argent X or Braavos).
-
-![connect-wallet](./packages/nextjs/public/ch0-wallet.png)
-
-> You should see the correct network in the frontend (<http://localhost:3000>):
-
-![image](./packages/nextjs/public/ch0-balance.png)
-
-> 💬 Hint: For faster loading of your transfer page, consider updating the `fromBlock` passed to `useScaffoldEventHistory` in [`packages/nextjs/app/transfers/page.tsx`](https://github.com/Scaffold-Stark/scaffold-stark-2/blob/main/packages/nextjs/hooks/scaffold-stark/useScaffoldEventHistory.ts) to `blocknumber - 10` at which your contract was deployed. Example: `fromBlock: 3750241n` (where `n` represents its a [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt)). To find this blocknumber, search your contract's address on Starkscan and find the `Contract Creation` transaction line.
+## Checkpoint 3: 🚢 启动前端 Ship your frontend! 🚁
 
 🚀 Deploy your NextJS App
 
-```shell
-yarn vercel
+```bash
+$ yarn vercel
+Vercel CLI 33.7.1
+? Set up and deploy “./packages/nextjs”? yes
+? Which scope do you want to deploy to? 
+? Link to existing project? no
+? What’s your project’s name? 
+? In which directory is your code located? ./
+Local settings detected in vercel.json:
+- Install Command: yarn install
+Auto-detected Project Settings (Next.js):
+- Build Command: next build
+- Development Command: next dev --port $PORT
+- Output Directory: Next.js default
+? Want to modify these settings? no
 ```
-
-> Follow the steps to deploy to Vercel. Once you log in (email, github, etc), the default options should work. It'll give you a public URL.
-
-> If you want to redeploy to the same production URL you can run `yarn vercel --prod`. If you omit the `--prod` flag it will deploy it to a preview/test URL.
 
 ⚠️ Run the automated testing function to make sure your app passes
 
@@ -204,19 +231,42 @@ yarn vercel
 yarn test
 ```
 
-#### Configuration of Third-Party Services for Production-Grade Apps
+> #### 前端报错处理
 
-By default, 🏗 Scaffold-Stark provides predefined Open API endpoint for some services such as Blast. This allows you to begin developing and testing your applications more easily, avoiding the need to register for these services.
-This is great to complete your **SpeedRunStark**.
+![alt text](<packages/nextjs/public/error rpc.png>)
 
-For production-grade applications, it's recommended to obtain your own API keys (to prevent rate limiting issues). You can configure these at:
-
-🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env.local`. You can create API keys from the [Alchemy dashboard](https://dashboard.alchemy.com/).
-
-> 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
+解决方案参见上文，在packages/nextjs/.env中调整合适的RPC地址
 
 ---
 
-> 🏃 Head to your next challenge [here](https://github.com/Scaffold-Stark/speedrunstark/tree/challenge-1-decentralized-staking).
+> ⚠️ 解决在vercel部署会发生找不到`bls-eth-wasm`依赖包导致无法运行IPFS的问题 
 
-> 💭 Problems, questions, comments on the stack? Post them to the [🏗 Scaffold-Stark developers chat](https://t.me/+wO3PtlRAreo4MDI9)
+在/packages/nextjs/next.config.mjs中config
+```mjs
+webpack: (config, { dev, isServer }) => {
+    config.resolve.fallback = { fs: false, net: false, tls: false };
+    config.externals.push("pino-pretty", "lokijs", "encoding", "bls-eth-wasm");//添加bls-eth-wasm
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(/^node:(.*)$/, (resource) => {
+        resource.request = resource.request.replace(/^node:/, "");
+      }),
+    );
+    ...
+export default withPWA({
+  ...nextConfig,
+  experimental: {
+    ...(nextConfig.experimental ?? {}),
+    serverExternalPackages: [
+      ...(nextConfig.experimental?.serverExternalPackages ?? []),
+      "bls-eth-wasm",
+    ],
+  },
+});
+```
+检查package.json
+```json
+  "dependencies": {
+    "bls-eth-wasm": "^1.4.0"//存在
+  }
+
+```
