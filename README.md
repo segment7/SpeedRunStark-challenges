@@ -13,6 +13,9 @@
 - [Git](https://git-scm.com/downloads)
 - [Rust](https://rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
+
+---
+
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 - [Starknet-devnet (=v0.4.0)](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)
 - [scarb (=v2.11.4)](https://docs.swmansion.com/scarb/download.html#install-via-asdf)
@@ -61,8 +64,6 @@ packages/nextjs/app/myNFTs/page.tsx
 
 ### 测试网部署（Sepolia ）
 
-
-- 在 packages/nextjs/scaffold.config.ts 文件中，将 targetNetworks 修改为`[chains.sepolia]`
 - 在 packages/snfoundry/.env 文件中，填写与 Sepolia 测试网相关的环境变量，包括您的钱包地址和私钥
     >  建议使用strarknet钱包如 Argent X，新建standard account进行测试网操作
     ```shell
@@ -75,19 +76,7 @@ packages/nextjs/app/myNFTs/page.tsx
     ACCOUNT_ADDRESS_SEPOLIA= 钱包地址
     ``` 
 
-- 在packages/nextjs/.env中调整合适的RPC地址
-
-    ```shell
-    # URL Sepolia
-    NEXT_PUBLIC_SEPOLIA_PROVIDER_URL= https://starknet-sepolia.public.blastapi.io/rpc/v0_8
-    ```
-    > 🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env`. You can create API keys from the [Alchemy dashboard](https://dashboard.alchemy.com/)  
-
-    > 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
-
-
----
-最后完成部署
+> #### 完成部署
 ```bash
 yarn deploy --network sepolia
 ```
@@ -106,6 +95,7 @@ Error: The wallet you're using to deploy the contract is not deployed in the sep
 </details>
 
 ---
+
 ```
 message: 'Account validation failed'
 ```
@@ -205,6 +195,18 @@ message: 'Account validation failed'
 
 
 ## Checkpoint 3: 🚢 启动前端 Ship your frontend! 🚁
+- 在 packages/nextjs/scaffold.config.ts 文件中，将 targetNetworks 修改为`[chains.sepolia]`
+- 在packages/nextjs/.env中调整合适的RPC地址
+
+    ```shell
+    # URL Sepolia
+    NEXT_PUBLIC_SEPOLIA_PROVIDER_URL= https://starknet-sepolia.public.blastapi.io/rpc/v0_8
+    ```
+    > 🔷 `RPC_URL_SEPOLIA` variable in `packages/snfoundry/.env` and `packages/nextjs/.env`. You can create API keys from the [Alchemy dashboard](https://dashboard.alchemy.com/)  
+
+    > 💬 Hint: It's recommended to store env's for nextjs in Vercel/system env config for live apps and use .env.local for local testing.
+
+
 
 🚀 Deploy your NextJS App
 
@@ -239,13 +241,14 @@ yarn test
 
 ---
 
-> ⚠️ 解决在vercel部署会发生找不到`bls-eth-wasm`依赖包导致无法运行IPFS的问题 
+> #### 解决在vercel部署会发生找不到`bls-eth-wasm`依赖包导致无法运行IPFS的问题 
 
 在/packages/nextjs/next.config.mjs中config
 ```mjs
 webpack: (config, { dev, isServer }) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
-    config.externals.push("pino-pretty", "lokijs", "encoding", "bls-eth-wasm");//添加bls-eth-wasm
+    config.externals.push("pino-pretty", "lokijs", "encoding", "bls-eth-wasm");
+    //添加bls-eth-wasm
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/^node:(.*)$/, (resource) => {
         resource.request = resource.request.replace(/^node:/, "");
@@ -264,9 +267,10 @@ export default withPWA({
 });
 ```
 检查package.json
-```json
+```mjs
   "dependencies": {
-    "bls-eth-wasm": "^1.4.0"//存在
+    "bls-eth-wasm": "^1.4.0"
+    //存在
   }
 
 ```
