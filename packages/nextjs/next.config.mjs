@@ -10,6 +10,9 @@ const withPWA = nextPWA({
 });
 
 const nextConfig = {
+  experimental: {
+      serverComponentsExternalPackages: ["bls-eth-wasm"],
+    },
   reactStrictMode: true,
   logging: {
     incomingRequests: false,
@@ -37,7 +40,7 @@ const nextConfig = {
   },
   webpack: (config, { dev, isServer }) => {
     config.resolve.fallback = { fs: false, net: false, tls: false };
-    config.externals.push("pino-pretty", "lokijs", "encoding", "bls-eth-wasm");
+    config.externals.push("pino-pretty", "lokijs", "encoding");
     config.plugins.push(
       new webpack.NormalModuleReplacementPlugin(/^node:(.*)$/, (resource) => {
         resource.request = resource.request.replace(/^node:/, "");
@@ -54,13 +57,4 @@ const nextConfig = {
   },
 };
 
-export default withPWA({
-  ...nextConfig,
-  experimental: {
-    ...(nextConfig.experimental ?? {}),
-    serverExternalPackages: [
-      ...(nextConfig.experimental?.serverExternalPackages ?? []),
-      "bls-eth-wasm",
-    ],
-  },
-});
+export default withPWA(nextConfig);

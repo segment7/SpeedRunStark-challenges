@@ -8,7 +8,7 @@
 
 📜 **Starknet Sepolia 测试网 智能合约地址** [0x02e952d8f16c9d5b3ec3ae955293de9277c9cc4be9a5fd215229560678b1862e](https://sepolia.starkscan.co/contract/0x02e952d8f16c9D5b3Ec3ae955293de9277C9cc4bE9a5fd215229560678B1862E)
 
-## Step 0: 📦 环境和依赖 
+## Step 0: 📦 Env&Dependencies 环境和依赖 
 
 - [Node (>= v20)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
@@ -38,10 +38,10 @@ git checkout challenge-0-simple-nft
 yarn install
 ```
 
-## Step 1: 📜 合约部署 
+## Step 1: 📜 Deploy Contract 合约部署 
 
 ### 自定义合约名字（可选）
-在packages/snfoundry/scripts-ts/deploy.ts，添加`contractName`
+- 在packages/snfoundry/scripts-ts/deploy.ts，添加`contractName`
 ```ts
 const deployScript = async (): Promise<void> => {
   await deployContract({
@@ -54,7 +54,7 @@ const deployScript = async (): Promise<void> => {
   });
 };
 ```
-注意如下位置里的`contractName`若没有同步也须修改
+- 注意如下位置里的`contractName`若没有同步也须修改
 ```
 packages/nextjs/components/SimpleNFT/NFTcard.tsx
 packages/nextjs/components/SimpleNFT/MyHoldings.tsx
@@ -103,7 +103,7 @@ message: 'Account validation failed'
 检查选择的地址，不能是smart account，若是，则需要degrade
 </details>
 
-## Step 2: 🖨 指定 IPFS Pinning 服务提供商 
+## Step 2: 🖨 Configure IPFS Pinning 指定IPFS服务提供商 
 
 > INFRA: New IPFS key creation is disabled for all users. Only IPFS keys that were active in late 2024 continue to have access to the IPFS network.  INFRA 已[禁用](https://docs.metamask.io/services/get-started/endpoints/#ipfs)所有用户的新密钥创建。 只有拥有 2024 年底有效 IPFS 密钥的用户才能继续访问 IPFS 网络。）  
 > 
@@ -124,83 +124,83 @@ message: 'Account validation failed'
 
 - 在packages/nextjs/utils/simpleNFT/ipfs.ts中进行调整  
 
-    <details><summary>代码示例</summary>
+  <details><summary>代码示例</summary>
 
-    ```ts
-    //lighthouse services
-    import lighthouse from "@lighthouse-web3/sdk";
+  ```ts
+  //lighthouse services
+  import lighthouse from "@lighthouse-web3/sdk";
 
-    const apiKey = "替换为你的 Lighthouse API Key";
+  const apiKey = "替换为你的 Lighthouse API Key";
 
-    export const ipfsClient = {
-    add: async (data: string) => {
-        try {
-        const response = await lighthouse.uploadText(data, apiKey);
-        //这里使用.uploadText应该能节省流量
-        if (response.data) {
-            return {
-            path: response.data.Hash,
-            cid: response.data.Hash,
-            size: response.data.Size,
-            };
-        }
-        throw new Error("Upload failed");
-        } catch (error) {
-        console.error("Error uploading to Lighthouse:", error);
-        throw error;
-        }
-    },
+  export const ipfsClient = {
+  add: async (data: string) => {
+      try {
+      const response = await lighthouse.uploadText(data, apiKey);
+      //这里使用.uploadText应该能节省流量
+      if (response.data) {
+          return {
+          path: response.data.Hash,
+          cid: response.data.Hash,
+          size: response.data.Size,
+          };
+      }
+      throw new Error("Upload failed");
+      } catch (error) {
+      console.error("Error uploading to Lighthouse:", error);
+      throw error;
+      }
+  },
 
-    // 添加 get 方法以保持 API 兼容性
-    get: async (cid: string) => {
-        try {
-        const response = await fetch(
-            `https://gateway.lighthouse.storage/ipfs/${cid}`,
-        );
-        if (response.ok) {
-            const content = await response.text();
-            return content;
-        }
-        throw new Error(`Failed to fetch: ${response.statusText}`);
-        } catch (error) {
-        console.error("Error fetching from Lighthouse:", error);
-        throw error;
-        }
-    },
-    };
+  // 添加 get 方法以保持 API 兼容性
+  get: async (cid: string) => {
+      try {
+      const response = await fetch(
+          `https://gateway.lighthouse.storage/ipfs/${cid}`,
+      );
+      if (response.ok) {
+          const content = await response.text();
+          return content;
+      }
+      throw new Error(`Failed to fetch: ${response.statusText}`);
+      } catch (error) {
+      console.error("Error fetching from Lighthouse:", error);
+      throw error;
+      }
+  },
+  };
 
-    export async function getNFTMetadataFromIPFS(ipfsHash: string) {
-    try {
-        const response = await fetch(
-        `https://gateway.lighthouse.storage/ipfs/${ipfsHash}`,
-        );
-        if (response.ok) {
-        const content = await response.text();
-        try {
-            const jsonObject = JSON.parse(content);
-            return jsonObject;
-        } catch (error) {
-            console.log("Error parsing JSON:", error);
-            return undefined;
-        }
-        }
-        throw new Error(`Failed to fetch metadata: ${response.statusText}`);
-    } catch (error) {
-        console.error("Error getting metadata from Lighthouse:", error);
-        throw error;
-    }
-    }
+  export async function getNFTMetadataFromIPFS(ipfsHash: string) {
+  try {
+      const response = await fetch(
+      `https://gateway.lighthouse.storage/ipfs/${ipfsHash}`,
+      );
+      if (response.ok) {
+      const content = await response.text();
+      try {
+          const jsonObject = JSON.parse(content);
+          return jsonObject;
+      } catch (error) {
+          console.log("Error parsing JSON:", error);
+          return undefined;
+      }
+      }
+      throw new Error(`Failed to fetch metadata: ${response.statusText}`);
+  } catch (error) {
+      console.error("Error getting metadata from Lighthouse:", error);
+      throw error;
+  }
+  }
 
-    ```
+  ```
 
-    </details>
-
-
+  </details>
 
 
 
 
-## Step 3: 🚢 启动前端 Ship your frontend! 🚁
+
+
+## Step 3: 🚢 Ship your frontend! 启动前端 🚁
 - 在 packages/nextjs/scaffold.config.ts 文件中，将 targetNetworks 修改为`[chains.sepolia]`
 - 在packages/nextjs/.env中调整合适的RPC地址
 
@@ -216,15 +216,15 @@ message: 'Account validation failed'
 
 🚀 Deploy your NextJS App
 
-```shell
-$ yarn vercel
-```
+  ```shell
+  yarn vercel
+  ```
 
 ⚠️ Run the automated testing function to make sure your app passes
 
-```shell
-yarn test
-```
+  ```shell
+  yarn test
+  ```
 
 > #### 前端报错处理
 
@@ -238,26 +238,10 @@ yarn test
 
 在/packages/nextjs/next.config.mjs中config
 ```mjs
-webpack: (config, { dev, isServer }) => {
-    config.resolve.fallback = { fs: false, net: false, tls: false };
-    config.externals.push("pino-pretty", "lokijs", "encoding", "bls-eth-wasm");
-    //添加bls-eth-wasm
-    config.plugins.push(
-      new webpack.NormalModuleReplacementPlugin(/^node:(.*)$/, (resource) => {
-        resource.request = resource.request.replace(/^node:/, "");
-      }),
-    );
-    ...
-export default withPWA({
-  ...nextConfig,
+const nextConfig = {
   experimental: {
-    ...(nextConfig.experimental ?? {}),
-    serverExternalPackages: [
-      ...(nextConfig.experimental?.serverExternalPackages ?? []),
-      "bls-eth-wasm",
-    ],
-  },
-});
+      serverComponentsExternalPackages: ["bls-eth-wasm"],
+    },
 ```
 检查packages/nextjs/package.json  
 ```mjs
