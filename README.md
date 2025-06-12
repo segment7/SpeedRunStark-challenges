@@ -1,21 +1,21 @@
 # 📜 Challenge #0: Simple NFT
+**Code based on** [**Speedrunstark**](https://github.com/Scaffold-Stark/speedrunstark)
+**(Powered by Scaffold-Stark)**
 
 ![readme-0](./packages/nextjs/public/homepage.png)
 
 🔗 **前端交互链接** [**vercel.app**](https://starknet-simple-nft-sigma.vercel.app/)  
 
-📜 **Sepolia 测试网 智能合约地址** [0x02e952d8f16c9d5b3ec3ae955293de9277c9cc4be9a5fd215229560678b1862e](https://sepolia.starkscan.co/contract/0x02e952d8f16c9D5b3Ec3ae955293de9277C9cc4bE9a5fd215229560678B1862E)
+📜 **Starknet Sepolia 测试网 智能合约地址** [0x02e952d8f16c9d5b3ec3ae955293de9277c9cc4be9a5fd215229560678b1862e](https://sepolia.starkscan.co/contract/0x02e952d8f16c9D5b3Ec3ae955293de9277C9cc4bE9a5fd215229560678B1862E)
 
-## Checkpoint 0: 📦 环境和依赖 📚
+## Step 0: 📦 环境和依赖 
 
 - [Node (>= v20)](https://nodejs.org/en/download/)
 - Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
 - [Git](https://git-scm.com/downloads)
 - [Rust](https://rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
-
----
-
+----
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 - [Starknet-devnet (=v0.4.0)](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)
 - [scarb (=v2.11.4)](https://docs.swmansion.com/scarb/download.html#install-via-asdf)
@@ -38,7 +38,7 @@ git checkout challenge-0-simple-nft
 yarn install
 ```
 
-## Checkpoint 1: 合约部署
+## Step 1: 📜 合约部署 
 
 ### 自定义合约名字（可选）
 在packages/snfoundry/scripts-ts/deploy.ts，添加`contractName`
@@ -103,7 +103,7 @@ message: 'Account validation failed'
 检查选择的地址，不能是smart account，若是，则需要degrade
 </details>
 
-## Checkpoint 2: 🖨 指定 IPFS Pinning 服务提供商
+## Step 2: 🖨 指定 IPFS Pinning 服务提供商 
 
 > INFRA: New IPFS key creation is disabled for all users. Only IPFS keys that were active in late 2024 continue to have access to the IPFS network.  INFRA 已[禁用](https://docs.metamask.io/services/get-started/endpoints/#ipfs)所有用户的新密钥创建。 只有拥有 2024 年底有效 IPFS 密钥的用户才能继续访问 IPFS 网络。）  
 > 
@@ -194,7 +194,7 @@ message: 'Account validation failed'
 
 
 
-## Checkpoint 3: 🚢 启动前端 Ship your frontend! 🚁
+## Step 3: 🚢 启动前端 Ship your frontend! 🚁
 - 在 packages/nextjs/scaffold.config.ts 文件中，将 targetNetworks 修改为`[chains.sepolia]`
 - 在packages/nextjs/.env中调整合适的RPC地址
 
