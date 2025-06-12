@@ -15,7 +15,7 @@
 - [Git](https://git-scm.com/downloads)
 - [Rust](https://rust-lang.org/tools/install)
 - [asdf](https://asdf-vm.com/guide/getting-started.html)
-----
+> 
 - [Cairo 1.0 extension for VSCode](https://marketplace.visualstudio.com/items?itemName=starkware.cairo1)
 - [Starknet-devnet (=v0.4.0)](https://github.com/gianalarcon/asdf-starknet-devnet/blob/main/README.md)
 - [scarb (=v2.11.4)](https://docs.swmansion.com/scarb/download.html#install-via-asdf)
@@ -114,7 +114,13 @@ message: 'Account validation failed'
 ![alt text](packages/nextjs/public/lighthouse.png)
 - 安装依赖  
 `yarn add @lighthouse-web3/sdk && yarn install`  
-`npm install bls-eth-wasm`
+- 在packages/nextjs/package.json中
+```mjs
+  "dependencies": {
+    "@lighthouse-web3/sdk": "^0.4.0",
+    //添加
+  }
+```
 
 - 在packages/nextjs/utils/simpleNFT/ipfs.ts中进行调整  
 
@@ -210,21 +216,8 @@ message: 'Account validation failed'
 
 🚀 Deploy your NextJS App
 
-```bash
+```shell
 $ yarn vercel
-Vercel CLI 33.7.1
-? Set up and deploy “./packages/nextjs”? yes
-? Which scope do you want to deploy to? 
-? Link to existing project? no
-? What’s your project’s name? 
-? In which directory is your code located? ./
-Local settings detected in vercel.json:
-- Install Command: yarn install
-Auto-detected Project Settings (Next.js):
-- Build Command: next build
-- Development Command: next dev --port $PORT
-- Output Directory: Next.js default
-? Want to modify these settings? no
 ```
 
 ⚠️ Run the automated testing function to make sure your app passes
@@ -266,7 +259,7 @@ export default withPWA({
   },
 });
 ```
-检查package.json
+检查packages/nextjs/package.json  
 ```mjs
   "dependencies": {
     "bls-eth-wasm": "^1.4.0"
