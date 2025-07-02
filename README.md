@@ -40,14 +40,13 @@ yarn install
 
 ## Step 1: 📜 Deploy Contract 合约部署 
 
-### 自定义合约名字（可选）
+### 自定义合约显示名（可选）
 - 在packages/snfoundry/scripts-ts/deploy.ts，添加`contractName`
 ```ts
 const deployScript = async (): Promise<void> => {
   await deployContract({
     contract: "YourCollectible",
-    contractName: "Starknet NFT Dapp",
-//add contract new contract name here
+    contractName: "Starknet NFT Dapp",//add new contract name here
     constructorArgs: {
       owner: deployer.address,
     },
